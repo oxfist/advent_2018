@@ -1,12 +1,13 @@
-use std::env;
-use std::fs;
+use std::io::{self, BufRead};
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let filename = &args[1];
-    let content = fs::read_to_string(filename);
+    let stdin = io::stdin();
+    let mut current_frequency: i32 = 0;
 
-    for frequency in content {
-        println!("{}", frequency);
+    for line in stdin.lock().lines() {
+        let new_frequency: i32 = line.unwrap().parse().unwrap();
+        current_frequency += new_frequency;
     }
+
+    println!("{}", current_frequency);
 }
