@@ -1,5 +1,5 @@
 use std::env;
-use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -11,19 +11,30 @@ fn main() {
 }
 
 fn chronal_calibration(filename: String) {
-    let file = File::open(filename).expect("Existing file");
     let mut current_frequency: i32 = 0;
-    let frequencies = HashMap::new();
+    let mut frequencies = HashSet::new();
+    let mut unfinished: bool = true;
 
-    read_frequencies(&mut current_frequency, frequencies, file);
+    while unfinished {
+        let file = File::open(filename.clone()).expect("Existing file");
+
+        unfinished = read_frequencies(&mut current_frequency, &mut frequencies,
+                                       file);
+    }
 
     println!("{}", current_frequency);
 }
 
 fn read_frequencies(current_frequency: &mut i32,
-                    frequencies: HashMap<&str, i32>, file: File) {
+                    frequencies: &mut HashSet<String>, file: File) -> bool {
     for line in BufReader::new(file).lines() {
         let new_frequency: i32 = line.unwrap().parse().expect("Valid integer");
         *current_frequency += new_frequency;
+
+        if !(*frequencies).insert((*current_frequency).to_string()) {
+            return false;
+        }
     }
+
+    return true
 }
