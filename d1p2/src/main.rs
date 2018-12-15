@@ -36,5 +36,5 @@ fn read_frequencies(current_frequency: &mut i32,
         }
     }
 
-    return true
+    return true;
 }
