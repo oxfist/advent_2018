@@ -11,9 +11,6 @@ fn main() {
 
 fn inventory_management_system(filename: String) {
     let file: File = File::open(filename).expect("Existing file");
-
-    // Variables for couting the amount of IDs that have exactly two of any
-    // letter and three of any letter, respectively.
     let exactly_two_letters_count: i32 = 0;
     let exactly_three_letters_count: i32 = 0;
 
@@ -26,12 +23,14 @@ fn inventory_management_system(filename: String) {
 }
 
 fn count_letters(id: String) -> HashMap<String, i32> {
-    let letter_count: HashMap<String, i32> = HashMap::<String, i32>::new();
-    let letters: Vec<String> = split_letters(id);
+    let mut letter_count: HashMap<String, i32> = HashMap::<String, i32>::new();
 
-    for letter in letters {
-        println!("{}", letter);
+    for letter in split_letters(id) {
+        let count = letter_count.entry(letter).or_insert(0);
+        *count += 1;
     }
+
+    print_hashmap(letter_count.clone());
 
     return letter_count;
 }
@@ -44,4 +43,11 @@ fn split_letters(id: String) -> Vec<String> {
     letters.pop();
 
     return letters;
+}
+
+fn print_hashmap(hashmap: HashMap<String, i32>) {
+    for (key, value) in hashmap {
+        print!("{{ {}: {} }}", key, value);
+    }
+    println!();
 }
